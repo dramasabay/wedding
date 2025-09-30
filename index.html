@@ -1,11 +1,10 @@
 <!doctype html>
-<html lang="km" data-theme="dark">
+<html lang="km">
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>ពិធីភ្ជាប់ពាក្យ – Mandy & Jason</title>
-<meta name="description" content="សូមអញ្ជើញចូលរួមពិធីភ្ជាប់ពាក្យ (Engagement) របស់ Mandy និង Jason។ ពេលវេលា និងទីតាំងនៅខាងក្នុង។" />
-<meta name="theme-color" content="#0f1115" />
+<meta name="description" content="សូមអញ្ជើញចូលរួមពិធីភ្ជាប់ពាក្យ (Engagement) របស់ Mandy និង Jason – ពេលវេលា និងទីតាំងនៅខាងក្នុង។" />
 
 <!-- Khmer & Latin fonts -->
 <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -13,26 +12,33 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+Khmer:wght@400;600;700&family=Kantumruy+Pro:wght@300;400;600&family=Cormorant+Garamond:wght@400;600;700&display=swap" rel="stylesheet" />
 
 <style>
-/* ===== THEME ===== */
 :root{
-  --bg:#0f1115;
-  --panel:#131823;
+  --bg: #0f1115;
   --ink:#e9ecf1;
   --muted:#b8bdc9;
-  --accent:#9fe6d6;          /* mint accent for text */
-  --gold:#e7c66a;            /* Khmer gold for border ornaments */
+  --accent:#9fe6d6;
   --stroke:#272b36;
-  --radius:18px;
-  --shadow:0 10px 30px rgba(0,0,0,.35);
-}
-@media (prefers-color-scheme: light){
-  :root{ --bg:#f7f8fb; --panel:#ffffff; --ink:#0c1222; --muted:#586178; --stroke:#e5e7eb; --shadow:0 10px 30px rgba(9,13,35,.08) }
-}
-:root[data-theme="light"]{ --bg:#f7f8fb; --panel:#ffffff; --ink:#0c1222; --muted:#586178; --stroke:#e5e7eb; --shadow:0 10px 30px rgba(9,13,35,.08) }
+  --radius: 16px;
+  --shadow: 0 10px 30px rgba(0,0,0,.35);
 
-/* ===== BASE ===== */
-*{box-sizing:border-box}
+  /* Card max width for desktops; scales down on phones */
+  --max-card: 860px;
+  --gutter: clamp(14px, 4vw, 32px);
+
+  /* Background image for the card */
+  --card-bg: url("https://raw.githubusercontent.com/dramasabay/wedding/14f23dc6573cea8d4991aa5b8ee3a02bb8ec48c6/khmer-frame.webp");
+
+  /* Default ratio (will be replaced by JS once the image loads) */
+  --bg-w: 768;
+  --bg-h: 1075;
+
+  /* Overlay to keep text readable on bright gold */
+  --overlay: rgba(15,17,21,.28);
+}
+
+/* Page background */
 html,body{height:100%}
+*{box-sizing:border-box}
 body{
   margin:0; color:var(--ink);
   background:
@@ -40,196 +46,115 @@ body{
     radial-gradient(920px 620px at 110% 0%, #2c1e4366 0%, transparent 60%),
     var(--bg);
   font-family:"Kantumruy Pro",ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Noto Serif Khmer",serif;
-  line-height:1.65;
-  -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  line-height:1.65; -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
 }
-.container{ width:min(100% - 2*clamp(18px,5vw,56px), 980px); margin-inline:auto }
 a{ color:inherit; text-decoration:none }
-a.underline{ text-decoration:underline; text-underline-offset:3px }
 
-/* ===== LAYOUT ===== */
-.header{
-  position:sticky; top:0; z-index:10;
-  backdrop-filter: blur(10px);
-  background: color-mix(in oklab, var(--bg) 85%, transparent);
-  border-bottom:1px solid var(--stroke);
-}
-.header__bar{ display:flex; align-items:center; justify-content:space-between; height:64px }
-.brand{ letter-spacing:.12em; font-weight:600 }
-.theme-toggle{
-  display:inline-grid; place-items:center; width:40px; height:40px;
-  border:1px solid var(--stroke); background:transparent; color:var(--ink);
-  border-radius:10px; cursor:pointer;
+/* Center the card on the page */
+.wrap{
+  min-height:100svh;
+  display:grid; place-items:center;
+  padding: var(--gutter);
 }
 
-.invite{
-  min-height:92svh; display:grid; place-items:center; text-align:center;
-  padding: clamp(28px,4vw,44px) 0; position:relative; overflow:clip;
-}
-
+/* ---------- The CARD that follows the background image ---------- */
 .card{
-  position:relative; z-index:1;
-  background: linear-gradient(180deg, color-mix(in oklab,var(--panel) 94%, transparent), transparent 0%);
-  border:1px solid var(--stroke); border-radius: var(--radius);
-  padding: clamp(24px, 6vw, 56px);
+  position:relative;
+  width: min(100%, var(--max-card));
+  aspect-ratio: var(--bg-w) / var(--bg-h); /* height follows image ratio */
+  border-radius: var(--radius);
+  overflow:hidden;
   box-shadow: var(--shadow);
+  /* Background image covers the card */
+  background-image: var(--card-bg);
+  background-size: cover;
+  background-position: center;
+}
+.card::after{ /* soft overlay for text contrast */
+  content:""; position:absolute; inset:0; background: var(--overlay);
 }
 
-/* ===== ORNAMENT BORDER ===== */
-.orn{
-  position:absolute; inset:12px; pointer-events:none;
-  width:calc(100% - 24px); height:calc(100% - 24px);
-  color:var(--gold); /* 'currentColor' inside the SVG = Khmer gold */
-  opacity:.95;
+/* Content sits on top of the background */
+.content{
+  position:absolute; inset: clamp(14px, 3.6vw, 40px);
+  display:grid; gap: clamp(8px, 2vw, 16px);
+  place-items:center;
+  text-align:center;
+  z-index: 1;
+  text-shadow: 0 1px 2px rgba(0,0,0,.35);
 }
-.orn rect{ fill:none; stroke:currentColor; stroke-width:1.6; rx:14; }
-.orn .corners path, .orn .corners circle{ stroke:currentColor; fill:none }
-.orn .center-dot{ fill:currentColor; stroke:none }
 
-/* Show either hearts or romduol flowers */
-.orn g.hearts{ display:none }
-.orn[data-orn="heart"] g.hearts{ display:inline }
-.orn[data-orn="heart"] g.flowers{ display:none }
-.orn[data-orn="flower"] g.flowers{ display:inline }
-
-/* ===== TYPOGRAPHY ===== */
-.eyebrow{ color:var(--muted); font-size:.95rem; letter-spacing:.06em; margin-bottom:10px }
+/* Typography (responsive with clamp) */
+.eyebrow{ color:var(--muted); font-size:clamp(.9rem, 1.8vw, 1.05rem); letter-spacing:.06em; margin:0 }
 .names{ font-family:"Cormorant Garamond","Noto Serif Khmer",serif; line-height:1.05 }
-.names .en{ font-size:clamp(40px, 8.4vw, 88px); font-weight:700; letter-spacing:.04em }
-.and{ font-size:clamp(28px, 6vw, 52px); color:color-mix(in oklab,var(--accent) 85%, var(--ink)); font-weight:600; margin:.1em 0 }
-.kh-caption{ font-family:"Noto Serif Khmer",serif; font-weight:600; letter-spacing:.02em; font-size:clamp(18px, 3.2vw, 22px); margin-top:10px }
-.sub{ color:var(--muted); font-size:1rem; margin:6px 0 0 }
-.divider{ height:1px; background:var(--stroke); margin:clamp(12px,3.5vw,20px) auto; width:min(80%,560px) }
+.names .en{ font-size: clamp(38px, 7vw, 84px); font-weight:700; letter-spacing:.04em }
+.and{ font-size: clamp(26px, 5vw, 46px); color: color-mix(in oklab, var(--accent) 85%, var(--ink)); font-weight:600; }
+.kh-caption{ font-family:"Noto Serif Khmer",serif; font-weight:600; letter-spacing:.02em; font-size: clamp(16px, 3vw, 20px); margin-top:2px }
+.divider{ height:1px; width: min(86%, 560px); background: linear-gradient(90deg, transparent, rgba(0,0,0,.28), transparent) }
 
-/* Date row like reference: MONTH | DAY | YEAR (Khmer numerals) */
 .dateRow{
   display:grid; grid-auto-flow:column; align-items:center; justify-content:center;
-  gap:clamp(12px,3.8vw,26px);
-  font-family:"Cormorant Garamond","Noto Serif Khmer",serif;
-  font-weight:700; letter-spacing:.06em;
+  gap: clamp(12px, 2.8vw, 24px);
+  font-family:"Cormorant Garamond","Noto Serif Khmer",serif; font-weight:700; letter-spacing:.06em;
 }
-.dateRow span{ font-size:clamp(20px,4.2vw,32px) }
-.dateRow .bar{ width:1px; height:1.4em; background:var(--stroke); display:inline-block }
+.dateRow span{ font-size: clamp(20px, 3.6vw, 30px) }
+.dateRow .bar{ width:1px; height:1.2em; background: linear-gradient(180deg, transparent, rgba(0,0,0,.28), transparent) }
+.timeNote{ font-family:"Noto Serif Khmer",serif; font-size: clamp(13px, 2.6vw, 16px); color: var(--muted) }
 
-.timeNote{ font-family:"Noto Serif Khmer",serif; font-size:clamp(14px,2.6vw,18px); color:var(--muted); margin-top:clamp(10px,3vw,14px) }
+/* Location (transparent, on background) */
+.location{ margin-top: clamp(6px, 2vw, 10px); }
+.location strong{ font-family:"Noto Serif Khmer",serif; display:block }
+.location .sub{ margin-top: 2px }
 
-/* Location panel */
-.location{
-  margin-top:clamp(18px,4vw,26px);
-  background: color-mix(in oklab,var(--panel) 85%, transparent);
-  border:1px solid var(--stroke); border-radius:12px; padding:12px 14px;
-}
-.location strong{ font-family:"Noto Serif Khmer",serif }
-.actions{ display:flex; gap:10px; justify-content:center; margin-top:10px }
+.actions{ display:flex; gap: 10px; justify-content:center; margin-top:8px; flex-wrap:wrap }
 .btn{
-  display:inline-grid; place-items:center; height:42px; padding:0 16px;
-  border-radius:999px; border:1px solid color-mix(in oklab, var(--gold) 70%, transparent);
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gold) 24%, transparent), transparent);
-  color:var(--ink); font-weight:600; cursor:pointer; box-shadow:var(--shadow);
+  display:inline-grid; place-items:center;
+  height: 42px; padding: 0 14px;
+  border-radius: 999px;
+  border: 1px solid color-mix(in oklab, var(--accent) 65%, transparent);
+  background: linear-gradient(180deg, color-mix(in oklab, var(--accent) 22%, transparent), transparent);
+  color: var(--ink); font-weight: 600; cursor: pointer; box-shadow: var(--shadow);
 }
-.btn--ghost{ background:transparent; border-color:var(--stroke) }
+.btn--ghost{ background: transparent; border-color: var(--stroke) }
 
-.footer{ text-align:center; color:var(--muted); padding:30px 0 }
+/* Footer */
+.footer{ text-align:center; color:var(--muted); padding: 10px 0 20px; font-size:.9rem }
 </style>
 </head>
 <body>
 
-<header class="header">
-  <div class="container header__bar">
-    <div class="brand">M&nbsp;&amp;&nbsp;J</div>
-    <button class="theme-toggle" id="themeBtn" aria-label="Toggle dark / light">☾</button>
-  </div>
-</header>
+<main class="wrap">
+  <section class="card" id="card" aria-labelledby="title">
+    <div class="content">
+      <p class="eyebrow">ដោយក្ដីអំណរ · With great pleasure</p>
 
-<main class="invite">
-  <section class="card container" aria-labelledby="title">
-    <!-- Decorative border (toggle hearts/flowers via data-orn) -->
-    <svg class="orn" id="orn" viewBox="0 0 100 140" preserveAspectRatio="none" data-orn="flower" aria-hidden="true">
-      <rect x="2.5" y="2.5" width="95" height="135" rx="8"></rect>
+      <div class="names" id="title">
+        <div class="en" id="nameA">MANDY</div>
+        <div class="and">&amp;</div>
+        <div class="en" id="nameB">JASON</div>
+      </div>
 
-      <!-- Corner romduol (Khmer national flower) -->
-      <g class="corners flowers">
-        <g transform="translate(10,10) scale(1.1)">
-          <!-- three petals -->
-          <circle cx="0" cy="-2.6" r="2.3"></circle>
-          <circle cx="-2.1" cy="1.2" r="2.1"></circle>
-          <circle cx="2.1" cy="1.2" r="2.1"></circle>
-          <circle class="center-dot" cx="0" cy="0" r="0.7"></circle>
-        </g>
-        <g transform="translate(90,10) scale(1.1)">
-          <circle cx="0" cy="-2.6" r="2.3"></circle>
-          <circle cx="-2.1" cy="1.2" r="2.1"></circle>
-          <circle cx="2.1" cy="1.2" r="2.1"></circle>
-          <circle class="center-dot" cx="0" cy="0" r="0.7"></circle>
-        </g>
-        <g transform="translate(10,130) scale(1.1)">
-          <circle cx="0" cy="-2.6" r="2.3"></circle>
-          <circle cx="-2.1" cy="1.2" r="2.1"></circle>
-          <circle cx="2.1" cy="1.2" r="2.1"></circle>
-          <circle class="center-dot" cx="0" cy="0" r="0.7"></circle>
-        </g>
-        <g transform="translate(90,130) scale(1.1)">
-          <circle cx="0" cy="-2.6" r="2.3"></circle>
-          <circle cx="-2.1" cy="1.2" r="2.1"></circle>
-          <circle cx="2.1" cy="1.2" r="2.1"></circle>
-          <circle class="center-dot" cx="0" cy="0" r="0.7"></circle>
-        </g>
-      </g>
+      <p class="kh-caption">ពិធី<strong>ភ្ជាប់ពាក្យ</strong> · Engagement Ceremony</p>
 
-      <!-- Hearts (show when data-orn="heart") -->
-      <g class="hearts" transform="translate(0,0)">
-        <!-- simple heart symbol -->
-        <defs>
-          <path id="heart" d="M 0 -2
-              C 0 -3.2, -1.2 -3.8, -2.1 -3.4
-              C -3.1 -3.0, -3.5 -1.9, -2.9 -1.1
-              C -2.1 0.0, 0 1.8, 0 1.8
-              C 0 1.8, 2.1 0.0, 2.9 -1.1
-              C 3.5 -1.9, 3.1 -3.0, 2.1 -3.4
-              C 1.2 -3.8, 0 -3.2, 0 -2 Z"
-            fill="none" stroke="currentColor" stroke-width="0.9" />
-        </defs>
-        <!-- four corners -->
-        <use href="#heart" transform="translate(10,10) scale(1.1)"/>
-        <use href="#heart" transform="translate(90,10) scale(1.1)"/>
-        <use href="#heart" transform="translate(10,130) scale(1.1) rotate(180)"/>
-        <use href="#heart" transform="translate(90,130) scale(1.1) rotate(180)"/>
-        <!-- top & bottom center -->
-        <use href="#heart" transform="translate(50,6.5) scale(1.2)"/>
-        <use href="#heart" transform="translate(50,133.5) scale(1.2) rotate(180)"/>
-      </g>
-    </svg>
+      <div class="divider" role="presentation"></div>
 
-    <p class="eyebrow">ដោយក្ដីអំណរ · With great pleasure</p>
+      <div class="dateRow">
+        <span id="monthKM">មិថុនា</span>
+        <i class="bar" aria-hidden="true"></i>
+        <span id="dayKM">១២</span>
+        <i class="bar" aria-hidden="true"></i>
+        <span id="yearKM">២០២៨</span>
+      </div>
 
-    <div class="names" id="title" aria-label="Couple names">
-      <div class="en" id="nameA">MANDY</div>
-      <div class="and">&amp;</div>
-      <div class="en" id="nameB">JASON</div>
-    </div>
+      <p class="timeNote" id="timeNote">ពិធីចាប់ផ្តើមម៉ោង ១០:០០ ព្រឹក</p>
 
-    <p class="kh-caption">ពិធី<strong>ភ្ជាប់ពាក្យ</strong> · Engagement Ceremony</p>
-
-    <div class="divider" role="presentation"></div>
-
-    <!-- Date: MONTH | DAY | YEAR in Khmer numerals -->
-    <div class="dateRow" id="dateRow">
-      <span id="monthKM">មិថុនា</span>
-      <i class="bar" aria-hidden="true"></i>
-      <span id="dayKM">១២</span>
-      <i class="bar" aria-hidden="true"></i>
-      <span id="yearKM">២០២៨</span>
-    </div>
-
-    <p class="timeNote" id="timeNote">ពិធីចាប់ផ្តើមម៉ោង ១០:០០ ព្រឹក</p>
-
-    <!-- Location -->
-    <div class="location" id="locBox" role="group" aria-label="Location">
-      <strong id="venueName">សាលា​ចាក់តមោក (Chaktomuk Hall)</strong>
-      <div class="sub" id="venueAddr">Preah Sisowath Quay, Phnom Penh, Cambodia</div>
-      <div class="actions">
-        <a class="btn" id="mapsLink" href="https://maps.google.com/?q=Chaktomuk+Conference+Hall+Phnom+Penh" target="_blank" rel="noopener">Open in Google Maps</a>
-        <button class="btn btn--ghost" id="copyAddr">Copy address</button>
+      <div class="location" role="group" aria-label="Location">
+        <strong id="venueName">សាលា​ចាក់តមោក (Chaktomuk Hall)</strong>
+        <div class="sub" id="venueAddr">Preah Sisowath Quay, Phnom Penh, Cambodia</div>
+        <div class="actions">
+          <a class="btn" id="mapsLink" href="https://maps.google.com/?q=Chaktomuk+Conference+Hall+Phnom+Penh" target="_blank" rel="noopener">Open in Google Maps</a>
+          <button class="btn btn--ghost" id="copyAddr">Copy address</button>
+        </div>
       </div>
     </div>
   </section>
@@ -238,69 +163,59 @@ a.underline{ text-decoration:underline; text-underline-offset:3px }
 <footer class="footer">© <span id="year"></span> Mandy & Jason</footer>
 
 <script>
-/* ==================== CONFIG ==================== */
-// Names, date/time (Cambodia +07:00), venue, and border style
+/* ========= EDIT THESE ========= */
 const INVITE = {
   coupleEN: ["Mandy", "Jason"],
-  startISO: "2028-06-12T10:00:00+07:00",
+  startISO: "2028-06-12T10:00:00+07:00", // Cambodia time
   venueName: "សាលា​ចាក់តមោក (Chaktomuk Hall)",
   venueAddress: "Preah Sisowath Quay, Phnom Penh, Cambodia",
   mapsURL: "https://maps.google.com/?q=Chaktomuk+Conference+Hall+Phnom+Penh"
 };
-// Border style: "flower" (romduol) or "heart"
-const ORNAMENT = { style: "flower" };
-/* ================================================ */
+/* ============================= */
 
-/* Theme toggle */
-(function theme(){
-  const root=document.documentElement, btn=document.getElementById('themeBtn');
-  const saved=localStorage.getItem('theme'); if(saved) root.setAttribute('data-theme',saved);
-  btn.textContent = root.getAttribute('data-theme')==='light'?'☼':'☾';
-  btn.addEventListener('click',()=>{
-    const now=root.getAttribute('data-theme')==='light'?'dark':'light';
-    root.setAttribute('data-theme',now); localStorage.setItem('theme',now);
-    btn.textContent = now==='light'?'☼':'☾';
-  });
-})();
+/* Khmer numerals/months */
+const KM_DIGITS = ["០","១","២","៣","៤","៥","៦","៧","៨","៩"];
+const KM_MONTHS = ["មករា","កុម្ភៈ","មីਨਾ","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
+const toKm = n => String(n).replace(/\d/g, d => KM_DIGITS[+d]);
 
-/* Khmer numerals & months */
-const KM_DIGITS=["០","១","២","៣","៤","៥","៦","៧","៨","៩"];
-const KM_MONTHS=["មករា","កុម្ភៈ","មីនា","មេសា","ឧសភា","មិថុនា","កក្កដា","សីហា","កញ្ញា","តុលា","វិច្ឆិកា","ធ្នូ"];
-const toKm=(n)=>String(n).replace(/\d/g,d=>KM_DIGITS[+d]);
-
-/* Render names */
-document.getElementById('nameA').textContent = INVITE.coupleEN[0].toUpperCase();
-document.getElementById('nameB').textContent = INVITE.coupleEN[1].toUpperCase();
-
-/* Render date & time in Khmer */
+/* Fill content */
 (() => {
-  const d=new Date(INVITE.startISO);
+  document.getElementById('nameA').textContent = INVITE.coupleEN[0].toUpperCase();
+  document.getElementById('nameB').textContent = INVITE.coupleEN[1].toUpperCase();
+  const d = new Date(INVITE.startISO);
   document.getElementById('monthKM').textContent = KM_MONTHS[d.getMonth()];
   document.getElementById('dayKM').textContent   = toKm(d.getDate());
   document.getElementById('yearKM').textContent  = toKm(d.getFullYear());
-  const h=d.getHours(), m=d.getMinutes();
-  const am=h<12; const hh=((h+11)%12)+1; const mm=String(m).padStart(2,"0");
+  const h=d.getHours(), m=d.getMinutes(), am=h<12, hh=((h+11)%12)+1, mm=String(m).padStart(2,"0");
   document.getElementById('timeNote').textContent = `ពិធីចាប់ផ្តើមម៉ោង ${toKm(hh)}:${toKm(mm)} ${am?'ព្រឹក':'ល្ងាច'}`;
-})();
-
-/* Location + actions */
-(() => {
   document.getElementById('venueName').textContent = INVITE.venueName;
   document.getElementById('venueAddr').textContent = INVITE.venueAddress;
   document.getElementById('mapsLink').href = INVITE.mapsURL;
-  document.getElementById('copyAddr').addEventListener('click', async ()=>{
-    try{
-      await navigator.clipboard.writeText(`${INVITE.venueName}, ${INVITE.venueAddress}`);
-      const b=document.getElementById('copyAddr'); const t=b.textContent; b.textContent='Copied!'; setTimeout(()=>b.textContent=t,1200);
-    }catch(e){ alert('Copy failed.'); }
-  });
+  document.getElementById('year').textContent = new Date().getFullYear();
 })();
 
-/* Footer year */
-document.getElementById('year').textContent = new Date().getFullYear();
+/* Copy address */
+document.getElementById('copyAddr').addEventListener('click', async ()=>{
+  try{
+    await navigator.clipboard.writeText(`${INVITE.venueName}, ${INVITE.venueAddress}`);
+    const b=document.getElementById('copyAddr'); const t=b.textContent; b.textContent='Copied!'; setTimeout(()=>b.textContent=t,1200);
+  }catch(e){ alert('Copy failed.'); }
+});
 
-/* Ornament style */
-document.getElementById('orn').setAttribute('data-orn', ORNAMENT.style);
+/* Make the card's aspect-ratio follow the actual background image */
+(function setRatioFromImage(){
+  const root = document.documentElement;
+  const raw = getComputedStyle(root).getPropertyValue('--card-bg').trim(); // e.g., url("assets/khmer-frame.jpg")
+  const url = (raw.match(/url\((['"]?)(.*?)\1\)/) || [])[2];
+  if(!url) return;
+  const img = new Image();
+  img.onload = () => {
+    root.style.setProperty('--bg-w', img.naturalWidth);
+    root.style.setProperty('--bg-h', img.naturalHeight);
+    // Aspect-ratio updates automatically via CSS var
+  };
+  img.src = url;
+})();
 </script>
 </body>
 </html>
